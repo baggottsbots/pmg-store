@@ -15,9 +15,17 @@ PRODUCTS.forEach((p, i) => {
   const card = document.createElement('div');
   card.className = 'card';
   card.style.transitionDelay = (i * 0.07) + 's';
+  // Use a CORS-friendly image proxy so images load from any domain
+  const proxyImg = 'https://wsrv.nl/?url=' + encodeURIComponent(p.img) + '&w=600&output=webp';
   card.innerHTML = `
     <div class="card-img-wrap">
-      <img src="${p.img}" alt="${p.name}" loading="lazy">
+      <img src="${proxyImg}"
+           data-fallback="${p.img}"
+           alt="${p.name}"
+           loading="lazy"
+           referrerpolicy="no-referrer"
+           crossorigin="anonymous"
+           onerror="this.onerror=null;this.src=this.dataset.fallback;">
     </div>
     <div class="card-body">
       <div class="card-name">${p.name}</div>
@@ -31,8 +39,8 @@ PRODUCTS.forEach((p, i) => {
   grid.appendChild(card);
 });
 
-/* ── INTERSECTION OBSERVER (scroll reveal) ── */
-const io = new IntersectionObserver((entries) => {
+/* ── SCROLL REVEAL ── */
+const io = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
 }, { threshold: 0.08 });
 document.querySelectorAll('.card').forEach(c => io.observe(c));
@@ -43,12 +51,10 @@ function addToCart(id) {
   const ex = cart.find(x => x.id === id);
   if (ex) ex.qty++;
   else cart.push({ ...p, qty: 1 });
-
   const btn = document.getElementById('btn-' + id);
   btn.classList.add('flash');
   btn.querySelector('span').textContent = '✓ ADDED';
   setTimeout(() => { btn.classList.remove('flash'); btn.querySelector('span').textContent = '+ ADD TO CART'; }, 1100);
-
   updateUI();
   toast('Added: ' + p.name.split(' ').slice(0,3).join(' '));
   openCart();
@@ -62,16 +68,11 @@ function changeQty(id, d) {
   updateUI();
 }
 
-function removeItem(id) {
-  cart = cart.filter(x => x.id !== id);
-  updateUI();
-}
+function removeItem(id) { cart = cart.filter(x => x.id !== id); updateUI(); }
 
 function updateUI() {
   const count = cart.reduce((s,i) => s + i.qty, 0);
   const totalCents = cart.reduce((s,i) => s + i.cents * i.qty, 0);
-
-  /* badge */
   const badge = document.getElementById('cart-badge');
   const btn = document.getElementById('cart-btn');
   const label = document.getElementById('cart-label');
@@ -79,22 +80,19 @@ function updateUI() {
   badge.style.display = count > 0 ? 'flex' : 'none';
   btn.classList.toggle('has-items', count > 0);
   label.textContent = count > 0 ? count : 'Cart';
-
-  /* total */
   document.getElementById('total-val').textContent = '$' + (totalCents / 100).toFixed(2);
-
-  /* list */
   const list = document.getElementById('cart-list');
   if (cart.length === 0) {
     list.innerHTML = '<div class="empty-msg"><span class="empty-icon">🛒</span>Your cart is empty.<br>Add something built different.</div>';
     return;
   }
-  list.innerHTML = cart.map(item => `
-    <div class="ci">
-      <img src="${item.img}" alt="${item.name}">
+  list.innerHTML = cart.map(item => {
+    const proxyThumb = 'https://wsrv.nl/?url=' + encodeURIComponent(item.img) + '&w=120&output=webp';
+    return `<div class="ci">
+      <img src="${proxyThumb}" data-fallback="${item.img}" alt="${item.name}" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src=this.dataset.fallback;">
       <div class="ci-info">
         <div class="ci-name">${item.name}</div>
-        <div class="ci-price">$${(item.cents / 100).toFixed(2)} each</div>
+        <div class="ci-price">$${(item.cents/100).toFixed(2)} each</div>
         <div class="ci-row">
           <div class="qty-wrap">
             <button class="qty-btn" onclick="changeQty(${item.id},-1)">−</button>
@@ -104,11 +102,10 @@ function updateUI() {
           <button class="ci-remove" onclick="removeItem(${item.id})">Remove</button>
         </div>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
-/* ── DRAWER ── */
 function openCart() {
   document.getElementById('overlay').classList.add('open');
   document.getElementById('drawer').classList.add('open');
@@ -120,54 +117,35 @@ function closeCart() {
   document.body.style.overflow = '';
 }
 
-/* ── CHECKOUT ── */
 function checkout() {
   const emailEl = document.getElementById('email');
   const email = emailEl.value.trim();
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     emailEl.classList.add('shake');
     setTimeout(() => emailEl.classList.remove('shake'), 400);
-    closeCart();
-    emailEl.focus();
-    toast('Enter your email first');
-    return;
+    closeCart(); emailEl.focus();
+    toast('Enter your email first'); return;
   }
   if (cart.length === 0) { toast('Cart is empty'); return; }
-
   const totalCents = cart.reduce((s,i) => s + i.cents * i.qty, 0);
-  const label = cart.length === 1
-    ? `${cart[0].name}${cart[0].qty > 1 ? ' ×' + cart[0].qty : ''}`
-    : `${cart.reduce((s,i)=>s+i.qty,0)} items`;
-
+  const label = cart.length === 1 ? `${cart[0].name}${cart[0].qty > 1 ? ' ×'+cart[0].qty : ''}` : `${cart.reduce((s,i)=>s+i.qty,0)} items`;
   const btn = document.getElementById('checkout-btn');
-  btn.disabled = true;
-  btn.textContent = 'REDIRECTING...';
-
+  btn.disabled = true; btn.textContent = 'REDIRECTING...';
   if (typeof window.__processDonation === 'function') {
     window.__processDonation(totalCents, label, email);
     setTimeout(() => { btn.disabled = false; btn.textContent = 'CHECKOUT →'; }, 5000);
   } else {
     toast('Stripe loading, try again in a moment');
-    btn.disabled = false;
-    btn.textContent = 'CHECKOUT →';
+    btn.disabled = false; btn.textContent = 'CHECKOUT →';
   }
 }
 
-/* ── TOAST ── */
 let toastTimer;
 function toast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
+  t.textContent = msg; t.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
 }
-
-/* ── RIPPLE on checkout btn ── */
-document.getElementById('checkout-btn').addEventListener('mousemove', function(e) {
-  const r = this.getBoundingClientRect();
-  this.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
-  this.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
-});
 
 updateUI();
