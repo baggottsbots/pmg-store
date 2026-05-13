@@ -271,7 +271,7 @@
 <!-- LIGHTBOX -->
 <div id="lightbox" onclick="closeLightbox()">
   <button id="lightbox-close" onclick="closeLightbox()" aria-label="Close">✕</button>
-  <img id="lightbox-img" src="" alt="">
+  <img id="lightbox-img" src="" alt="" onclick="event.stopPropagation()">
   <div id="lightbox-caption"></div>
 </div>
 
