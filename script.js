@@ -1,21 +1,21 @@
 const PRODUCTS = [
-  { id:1, name:"PMG Mesh Trucker Hat",               price:34.99,  cents:3499,   desc:"Rep the brand. Limited drop. Breathable mesh, structured front, embroidered PMG logo.",                                                        img:"https://paymegpt.com/objects/generated-images/2/1778637281482-27caf5ae4ffdef4c.png" },
-  { id:2, name:"Neuro Stack Nootropic (Brainergy)",  price:67.00,  cents:6700,   desc:"The 2026 brainergy trend is here. Focus, clarity, flow state. 30-day supply of cognitive performance fuel.",                                  img:"https://paymegpt.com/objects/generated-images/2/1778637332318-49d727f1dea8ca11.png" },
-  { id:3, name:"AI Millionaires Retreat Fiji Ticket",price:4997.00,cents:499700, desc:"5 days in Fiji with top AI entrepreneurs. Mastermind sessions, beachfront dinners, deal flow. 40 seats only.",                              img:"https://paymegpt.com/objects/generated-images/2/1778637406227-2ffd33e3f7ab9b01.png" },
-  { id:4, name:"PMG Chatbot King Hoodie",            price:79.00,  cents:7900,   desc:"Heavyweight fleece. Oversized fit. Chatbot King embroidered chest. You either run AI or you don't.",                                          img:"https://paymegpt.com/objects/generated-images/2/1778637482151-0ff7e979839a6d98.png" },
-  { id:5, name:"Alpha Stack Creatine + Electrolytes",price:54.00,  cents:5400,   desc:"Train harder. Recover faster. Creatine monohydrate + full electrolyte panel. Clean label, zero fillers.",                                    img:"https://paymegpt.com/objects/generated-images/2/1778637558773-e1e304d377b1c00d.png" },
-  { id:6, name:"Fiji Retreat VIP Welcome Kit",       price:297.00, cents:29700,  desc:"Exclusive welcome package. PMG gear, branded notebook, personalized itinerary, VIP swag shipped to your door before the event.",             img:"https://paymegpt.com/objects/generated-images/2/1778637641687-19d75cde90d0d4e9.png" }
+  { id:1, name:"PMG Mesh Trucker Hat",                price:34.99,  cents:3499,   desc:"Rep the brand. Limited drop. Breathable mesh, structured front, embroidered PMG logo.",                                               img:"https://paymegpt.com/objects/generated-images/2/1778637281482-27caf5ae4ffdef4c.png" },
+  { id:2, name:"Neuro Stack Nootropic (Brainergy)",   price:67.00,  cents:6700,   desc:"The 2026 brainergy trend is here. Focus, clarity, flow state. 30-day supply of cognitive performance fuel.",                         img:"https://paymegpt.com/objects/generated-images/2/1778637332318-49d727f1dea8ca11.png" },
+  { id:3, name:"AI Millionaires Retreat Fiji Ticket", price:4997.00,cents:499700, desc:"5 days in Fiji with top AI entrepreneurs. Mastermind sessions, beachfront dinners, deal flow. 40 seats only.",                     img:"https://paymegpt.com/objects/generated-images/2/1778637406227-2ffd33e3f7ab9b01.png" },
+  { id:4, name:"PMG Chatbot King Hoodie",             price:79.00,  cents:7900,   desc:"Heavyweight fleece. Oversized fit. Chatbot King embroidered chest. You either run AI or you don't.",                                 img:"https://paymegpt.com/objects/generated-images/2/1778637482151-0ff7e979839a6d98.png" },
+  { id:5, name:"Alpha Stack Creatine + Electrolytes", price:54.00,  cents:5400,   desc:"Train harder. Recover faster. Creatine monohydrate + full electrolyte panel. Clean label, zero fillers.",                           img:"https://paymegpt.com/objects/generated-images/2/1778637558773-e1e304d377b1c00d.png" },
+  { id:6, name:"Fiji Retreat VIP Welcome Kit",        price:297.00, cents:29700,  desc:"Exclusive welcome package. PMG gear, branded notebook, personalized itinerary, VIP swag shipped to your door before the event.",    img:"https://paymegpt.com/objects/generated-images/2/1778637641687-19d75cde90d0d4e9.png" }
 ];
 
 let cart = [];
 
-/* ── RENDER GRID ── */
+/* RENDER GRID */
 const grid = document.getElementById('grid');
 PRODUCTS.forEach((p, i) => {
   const card = document.createElement('div');
   card.className = 'card';
   card.style.transitionDelay = (i * 0.07) + 's';
-  const proxyImg  = 'https://wsrv.nl/?url=' + encodeURIComponent(p.img) + '&w=600&output=webp';
+  const proxyImg = 'https://wsrv.nl/?url=' + encodeURIComponent(p.img) + '&w=600&output=webp';
   card.innerHTML = `
     <div class="card-img-wrap" onclick="openLightbox(${p.id})">
       <img src="${proxyImg}" data-fallback="${p.img}" alt="${p.name}" loading="lazy"
@@ -33,13 +33,13 @@ PRODUCTS.forEach((p, i) => {
   grid.appendChild(card);
 });
 
-/* ── SCROLL REVEAL ── */
+/* SCROLL REVEAL */
 const io = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
 }, { threshold: 0.08 });
 document.querySelectorAll('.card').forEach(c => io.observe(c));
 
-/* ── LIGHTBOX ── */
+/* LIGHTBOX */
 function openLightbox(id) {
   const p = PRODUCTS.find(x => x.id === id);
   const lb = document.getElementById('lightbox');
@@ -59,7 +59,7 @@ function closeLightbox() {
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLightbox(); closeCart(); } });
 
-/* ── CART ── */
+/* CART */
 function addToCart(id) {
   const p = PRODUCTS.find(x => x.id === id);
   const ex = cart.find(x => x.id === id);
@@ -87,7 +87,6 @@ function removeItem(id) { cart = cart.filter(x => x.id !== id); updateUI(); }
 function updateUI() {
   const count = cart.reduce((s,i) => s + i.qty, 0);
   const totalCents = cart.reduce((s,i) => s + i.cents * i.qty, 0);
-
   const badge = document.getElementById('cart-badge');
   const btn = document.getElementById('cart-btn');
   badge.textContent = count;
@@ -96,7 +95,6 @@ function updateUI() {
   document.getElementById('cart-label').textContent = count > 0 ? count : 'Cart';
   document.getElementById('total-val').textContent = '$' + (totalCents / 100).toFixed(2);
 
-  /* items list */
   const list = document.getElementById('cart-list');
   if (cart.length === 0) {
     list.innerHTML = '<div class="empty-msg"><span class="empty-icon">🛒</span>Your cart is empty.<br>Add something built different.</div>';
@@ -123,7 +121,6 @@ function updateUI() {
     </div>`;
   }).join('');
 
-  /* order summary */
   const lines = cart.map(item => {
     const lineTotal = (item.cents * item.qty / 100).toFixed(2);
     const qtyLabel = item.qty > 1 ? ` ×${item.qty}` : '';
@@ -150,7 +147,6 @@ function closeCart() {
   document.body.style.overflow = '';
 }
 
-/* ── CHECKOUT ── */
 function checkout() {
   const emailEl = document.getElementById('email');
   const email = emailEl.value.trim();
@@ -161,20 +157,15 @@ function checkout() {
     toast('Enter your email first'); return;
   }
   if (cart.length === 0) { toast('Cart is empty'); return; }
-
   const totalCents = cart.reduce((s,i) => s + i.cents * i.qty, 0);
-
-  /* Build a detailed label: "Hat x1, Hoodie x2, ..." (max ~80 chars) */
   let labelParts = cart.map(i => {
     const shortName = i.name.split(' ').slice(0,3).join(' ');
     return i.qty > 1 ? `${shortName} ×${i.qty}` : shortName;
   });
   let label = labelParts.join(', ');
   if (label.length > 80) label = label.slice(0, 77) + '...';
-
   const btn = document.getElementById('checkout-btn');
   btn.disabled = true; btn.textContent = 'REDIRECTING...';
-
   if (typeof window.__processDonation === 'function') {
     window.__processDonation(totalCents, label, email);
     setTimeout(() => { btn.disabled = false; btn.textContent = 'CHECKOUT →'; }, 5000);
@@ -184,7 +175,6 @@ function checkout() {
   }
 }
 
-/* ── TOAST ── */
 let toastTimer;
 function toast(msg) {
   const t = document.getElementById('toast');
