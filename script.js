@@ -70,7 +70,6 @@ function addToCart(id) {
   btn.querySelector('span').textContent = '✓ ADDED';
   setTimeout(() => { btn.classList.remove('flash'); btn.querySelector('span').textContent = '+ ADD TO CART'; }, 1100);
   updateUI();
-  toast('Added: ' + p.name.split(' ').slice(0,3).join(' '));
   openCart();
 }
 
@@ -154,9 +153,9 @@ function checkout() {
     emailEl.classList.add('shake');
     setTimeout(() => emailEl.classList.remove('shake'), 400);
     closeCart(); emailEl.focus();
-    toast('Enter your email first'); return;
+    return;
   }
-  if (cart.length === 0) { toast('Cart is empty'); return; }
+  if (cart.length === 0) { return; }
   const totalCents = cart.reduce((s,i) => s + i.cents * i.qty, 0);
   let labelParts = cart.map(i => {
     const shortName = i.name.split(' ').slice(0,3).join(' ');
@@ -170,17 +169,8 @@ function checkout() {
     window.__processDonation(totalCents, label, email);
     setTimeout(() => { btn.disabled = false; btn.textContent = 'CHECKOUT →'; }, 5000);
   } else {
-    toast('Stripe loading, try again in a moment');
     btn.disabled = false; btn.textContent = 'CHECKOUT →';
   }
-}
-
-let toastTimer;
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
 }
 
 updateUI();
