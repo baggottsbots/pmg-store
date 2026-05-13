@@ -172,7 +172,5 @@ header {
 #checkout-btn { width: 100%; background: var(--teal); color: #000; border: none; border-radius: 12px; padding: 16px; font-family: var(--font-display); font-size: 1.3rem; letter-spacing: 0.06em; cursor: pointer; transition: background 0.2s, transform 0.15s; -webkit-tap-highlight-color: transparent; }
 #checkout-btn:active { transform: scale(0.98); }
 #checkout-btn:disabled { background: #2a2a2a; color: var(--muted); cursor: not-allowed; }
-#toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%) translateY(-30px); background: var(--surface2); border: 1px solid var(--teal-glow); color: var(--text); padding: 11px 22px; border-radius: 100px; font-size: 0.83rem; font-weight: 600; z-index: 300; opacity: 0; transition: all 0.35s var(--ease-out); white-space: nowrap; pointer-events: none; box-shadow: 0 4px 20px rgba(54,214,181,0.15); }
-#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 footer { text-align: center; padding: 28px 20px; color: #333; font-size: 0.75rem; border-top: 1px solid var(--border); position: relative; z-index: 1; letter-spacing: 0.05em; }
 footer span { color: var(--teal); }
