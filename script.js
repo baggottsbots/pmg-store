@@ -1,189 +1,173 @@
 const PRODUCTS = [
-  {
-    id: 1,
-    name: "PMG Mesh Trucker Hat",
-    desc: "Rep the brand. Limited drop. Breathable mesh, structured front, embroidered PMG logo.",
-    price: 34.99,
-    cents: 3499,
-    img: "https://paymegpt.com/objects/generated-images/2/1778637281482-27caf5ae4ffdef4c.png"
-  },
-  {
-    id: 2,
-    name: "Neuro Stack Nootropic (Brainergy)",
-    desc: "The 2026 brainergy trend is here. Focus, clarity, flow state. 30-day supply of cognitive performance fuel.",
-    price: 67.00,
-    cents: 6700,
-    img: "https://paymegpt.com/objects/generated-images/2/1778637332318-49d727f1dea8ca11.png"
-  },
-  {
-    id: 3,
-    name: "AI Millionaires Retreat Fiji Ticket",
-    desc: "5 days in Fiji with the top AI entrepreneurs on the planet. Mastermind sessions, beachfront dinners, deal flow. Limited to 40 seats.",
-    price: 4997.00,
-    cents: 499700,
-    img: "https://paymegpt.com/objects/generated-images/2/1778637406227-2ffd33e3f7ab9b01.png"
-  },
-  {
-    id: 4,
-    name: "PMG Chatbot King Hoodie",
-    desc: "Heavyweight fleece. Oversized fit. Chatbot King embroidered chest. You either run AI or you don't.",
-    price: 79.00,
-    cents: 7900,
-    img: "https://paymegpt.com/objects/generated-images/2/1778637482151-0ff7e979839a6d98.png"
-  },
-  {
-    id: 5,
-    name: "Alpha Stack Creatine + Electrolytes",
-    desc: "Train harder. Recover faster. Creatine monohydrate + full electrolyte panel. Clean label, zero fillers.",
-    price: 54.00,
-    cents: 5400,
-    img: "https://paymegpt.com/objects/generated-images/2/1778637558773-e1e304d377b1c00d.png"
-  },
-  {
-    id: 6,
-    name: "Fiji Retreat VIP Welcome Kit",
-    desc: "Exclusive welcome package for Fiji Retreat attendees. PMG gear, branded notebook, personalized itinerary, and VIP swag box shipped to your door before the event.",
-    price: 297.00,
-    cents: 29700,
-    img: "https://paymegpt.com/objects/generated-images/2/1778637641687-19d75cde90d0d4e9.png"
-  }
+  { id:1, name:"PMG Mesh Trucker Hat", price:34.99, cents:3499, desc:"Rep the brand. Limited drop. Breathable mesh, structured front, embroidered PMG logo.", img:"https://paymegpt.com/objects/generated-images/2/1778637281482-27caf5ae4ffdef4c.png" },
+  { id:2, name:"Neuro Stack Nootropic (Brainergy)", price:67.00, cents:6700, desc:"The 2026 brainergy trend is here. Focus, clarity, flow state. 30-day supply of cognitive performance fuel.", img:"https://paymegpt.com/objects/generated-images/2/1778637332318-49d727f1dea8ca11.png" },
+  { id:3, name:"AI Millionaires Retreat Fiji Ticket", price:4997.00, cents:499700, desc:"5 days in Fiji with top AI entrepreneurs. Mastermind sessions, beachfront dinners, deal flow. 40 seats only.", img:"https://paymegpt.com/objects/generated-images/2/1778637406227-2ffd33e3f7ab9b01.png" },
+  { id:4, name:"PMG Chatbot King Hoodie", price:79.00, cents:7900, desc:"Heavyweight fleece. Oversized fit. Chatbot King embroidered chest. You either run AI or you don't.", img:"https://paymegpt.com/objects/generated-images/2/1778637482151-0ff7e979839a6d98.png" },
+  { id:5, name:"Alpha Stack Creatine + Electrolytes", price:54.00, cents:5400, desc:"Train harder. Recover faster. Creatine monohydrate + full electrolyte panel. Clean label, zero fillers.", img:"https://paymegpt.com/objects/generated-images/2/1778637558773-e1e304d377b1c00d.png" },
+  { id:6, name:"Fiji Retreat VIP Welcome Kit", price:297.00, cents:29700, desc:"Exclusive welcome package. PMG gear, branded notebook, personalized itinerary, VIP swag shipped to your door.", img:"https://paymegpt.com/objects/generated-images/2/1778637641687-19d75cde90d0d4e9.png" }
 ];
 
 let cart = [];
 
-// Render product grid
-const grid = document.getElementById('product-grid');
-PRODUCTS.forEach(p => {
-  grid.innerHTML += `
-    <div class="card">
+/* ── RENDER GRID ── */
+const grid = document.getElementById('grid');
+PRODUCTS.forEach((p, i) => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.transitionDelay = (i * 0.07) + 's';
+  card.innerHTML = `
+    <div class="card-img-wrap">
       <img src="${p.img}" alt="${p.name}" loading="lazy">
-      <div class="card-body">
-        <div class="card-name">${p.name}</div>
-        <div class="card-desc">${p.desc}</div>
-        <div class="card-footer">
-          <div class="card-price">$${p.price.toFixed(2)}</div>
-          <button class="btn-add" id="btn-${p.id}" onclick="addToCart(${p.id})">+ Add to Cart</button>
-        </div>
-      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-name">${p.name}</div>
+      <div class="card-price">$${p.price % 1 === 0 ? p.price.toFixed(0) : p.price.toFixed(2)}</div>
+      <div class="card-desc">${p.desc}</div>
+      <button class="btn-add" id="btn-${p.id}" onclick="addToCart(${p.id})">
+        <span>+ ADD TO CART</span>
+      </button>
     </div>
   `;
+  grid.appendChild(card);
 });
 
+/* ── INTERSECTION OBSERVER (scroll reveal) ── */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+}, { threshold: 0.08 });
+document.querySelectorAll('.card').forEach(c => io.observe(c));
+
+/* ── CART ── */
 function addToCart(id) {
-  const product = PRODUCTS.find(p => p.id === id);
-  const existing = cart.find(i => i.id === id);
-  if (existing) {
-    existing.qty++;
-  } else {
-    cart.push({ ...product, qty: 1 });
-  }
-  // Flash button
+  const p = PRODUCTS.find(x => x.id === id);
+  const ex = cart.find(x => x.id === id);
+  if (ex) ex.qty++;
+  else cart.push({ ...p, qty: 1 });
+
   const btn = document.getElementById('btn-' + id);
-  btn.textContent = '✓ Added';
-  btn.classList.add('added');
-  setTimeout(() => { btn.textContent = '+ Add to Cart'; btn.classList.remove('added'); }, 1200);
-  updateCartUI();
-  showToast(`${product.name} added to cart`);
+  btn.classList.add('flash');
+  btn.querySelector('span').textContent = '✓ ADDED';
+  setTimeout(() => { btn.classList.remove('flash'); btn.querySelector('span').textContent = '+ ADD TO CART'; }, 1100);
+
+  updateUI();
+  toast('Added: ' + p.name.split(' ').slice(0,3).join(' '));
   openCart();
 }
 
-function removeFromCart(id) {
-  cart = cart.filter(i => i.id !== id);
-  updateCartUI();
-}
-
-function changeQty(id, delta) {
-  const item = cart.find(i => i.id === id);
+function changeQty(id, d) {
+  const item = cart.find(x => x.id === id);
   if (!item) return;
-  item.qty += delta;
-  if (item.qty <= 0) removeFromCart(id);
-  else updateCartUI();
+  item.qty += d;
+  if (item.qty <= 0) cart = cart.filter(x => x.id !== id);
+  updateUI();
 }
 
-function updateCartUI() {
-  const totalItems = cart.reduce((s, i) => s + i.qty, 0);
-  const totalCents = cart.reduce((s, i) => s + i.cents * i.qty, 0);
-  const totalDollars = (totalCents / 100).toFixed(2);
+function removeItem(id) {
+  cart = cart.filter(x => x.id !== id);
+  updateUI();
+}
 
-  // Count badge
-  const badge = document.getElementById('cart-count');
-  badge.textContent = totalItems;
-  badge.style.display = totalItems > 0 ? 'flex' : 'none';
+function updateUI() {
+  const count = cart.reduce((s,i) => s + i.qty, 0);
+  const totalCents = cart.reduce((s,i) => s + i.cents * i.qty, 0);
 
-  // Total
-  document.getElementById('cart-total').textContent = '$' + totalDollars;
+  /* badge */
+  const badge = document.getElementById('cart-badge');
+  const btn = document.getElementById('cart-btn');
+  const label = document.getElementById('cart-label');
+  badge.textContent = count;
+  badge.style.display = count > 0 ? 'flex' : 'none';
+  btn.classList.toggle('has-items', count > 0);
+  label.textContent = count > 0 ? count : 'Cart';
 
-  // Items list
-  const container = document.getElementById('cart-items');
+  /* total */
+  document.getElementById('total-val').textContent = '$' + (totalCents / 100).toFixed(2);
+
+  /* list */
+  const list = document.getElementById('cart-list');
   if (cart.length === 0) {
-    container.innerHTML = '<p class="empty-cart">Your cart is empty.<br>Add something built different.</p>';
+    list.innerHTML = '<div class="empty-msg"><span class="empty-icon">🛒</span>Your cart is empty.<br>Add something built different.</div>';
     return;
   }
-  container.innerHTML = cart.map(item => `
-    <div class="cart-item">
+  list.innerHTML = cart.map(item => `
+    <div class="ci">
       <img src="${item.img}" alt="${item.name}">
-      <div class="cart-item-info">
-        <div class="cart-item-name">${item.name}</div>
-        <div class="cart-item-price">$${item.price.toFixed(2)} each</div>
-        <div class="qty-controls">
-          <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
-          <span class="qty-val">${item.qty}</span>
-          <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+      <div class="ci-info">
+        <div class="ci-name">${item.name}</div>
+        <div class="ci-price">$${(item.cents / 100).toFixed(2)} each</div>
+        <div class="ci-row">
+          <div class="qty-wrap">
+            <button class="qty-btn" onclick="changeQty(${item.id},-1)">−</button>
+            <span class="qty-val">${item.qty}</span>
+            <button class="qty-btn" onclick="changeQty(${item.id},1)">+</button>
+          </div>
+          <button class="ci-remove" onclick="removeItem(${item.id})">Remove</button>
         </div>
-        <button class="remove-item" onclick="removeFromCart(${item.id})">Remove</button>
       </div>
     </div>
   `).join('');
 }
 
+/* ── DRAWER ── */
 function openCart() {
-  document.getElementById('cart-overlay').classList.add('open');
-  document.getElementById('cart-drawer').classList.add('open');
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
-
 function closeCart() {
-  document.getElementById('cart-overlay').classList.remove('open');
-  document.getElementById('cart-drawer').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+  document.body.style.overflow = '';
 }
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2400);
-}
-
-function doCheckout() {
+/* ── CHECKOUT ── */
+function checkout() {
   const emailEl = document.getElementById('email');
   const email = emailEl.value.trim();
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    emailEl.classList.add('error');
+    emailEl.classList.add('shake');
+    setTimeout(() => emailEl.classList.remove('shake'), 400);
+    closeCart();
     emailEl.focus();
-    showToast('Please enter a valid email first');
-    setTimeout(() => emailEl.classList.remove('error'), 2000);
+    toast('Enter your email first');
     return;
   }
-  if (cart.length === 0) {
-    showToast('Add something to your cart first');
-    return;
-  }
-  const totalCents = cart.reduce((s, i) => s + i.cents * i.qty, 0);
+  if (cart.length === 0) { toast('Cart is empty'); return; }
+
+  const totalCents = cart.reduce((s,i) => s + i.cents * i.qty, 0);
   const label = cart.length === 1
-    ? `${cart[0].name}${cart[0].qty > 1 ? ' x' + cart[0].qty : ''}`
-    : `${cart.length} items (${cart.reduce((s,i)=>s+i.qty,0)} units)`;
+    ? `${cart[0].name}${cart[0].qty > 1 ? ' ×' + cart[0].qty : ''}`
+    : `${cart.reduce((s,i)=>s+i.qty,0)} items`;
 
   const btn = document.getElementById('checkout-btn');
   btn.disabled = true;
-  btn.textContent = 'Redirecting to Stripe...';
+  btn.textContent = 'REDIRECTING...';
 
   if (typeof window.__processDonation === 'function') {
     window.__processDonation(totalCents, label, email);
-    setTimeout(() => { btn.disabled = false; btn.textContent = 'Checkout with Stripe →'; }, 4000);
+    setTimeout(() => { btn.disabled = false; btn.textContent = 'CHECKOUT →'; }, 5000);
   } else {
-    showToast('Stripe checkout is loading, try again in a moment');
+    toast('Stripe loading, try again in a moment');
     btn.disabled = false;
-    btn.textContent = 'Checkout with Stripe →';
+    btn.textContent = 'CHECKOUT →';
   }
 }
 
-updateCartUI();
+/* ── TOAST ── */
+let toastTimer;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+/* ── RIPPLE on checkout btn ── */
+document.getElementById('checkout-btn').addEventListener('mousemove', function(e) {
+  const r = this.getBoundingClientRect();
+  this.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+  this.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+});
+
+updateUI();
