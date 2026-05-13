@@ -8,6 +8,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 
 <!-- SEO Meta Tags -->
@@ -23,7 +25,7 @@
 
 <script data-gate>
 (function(){
-  var slug='mJeUJMCgNw';var apiBase='https://paymegpt.com';var currency='USD';var presets=[2500,5000,10000,25000];var minAmt=100;var maxAmt=49970000;var thankYouMsg='Thank you for your generous donation!';
+  var slug='mJeUJMCgNw';var apiBase='https://paymegpt.com';var currency='USD';var presets=[3499,6499,499700,6999,4999,29700];var minAmt=100;var maxAmt=50000000;var thankYouMsg='Order received! Check your email for confirmation. Welcome to the PMG fam.';
   function fmtD(c){return new Intl.NumberFormat('en-US',{style:'currency',currency:currency}).format(c/100);}
   function findDonEmail(){var ids=['email','emailAddress','buyer-email','buyerEmail','donor-email','donorEmail','user-email','userEmail','contact-email'];for(var i=0;i<ids.length;i++){var el=document.getElementById(ids[i]);if(el&&el.value&&el.value.indexOf('@')>-1)return el.value.trim();}var inputs=document.querySelectorAll('input[type="email"],input[name*="email"],input[placeholder*="email"],input[placeholder*="Email"]');for(var j=0;j<inputs.length;j++){if(inputs[j].value&&inputs[j].value.indexOf('@')>-1)return inputs[j].value.trim();}return '';}
   function findDonName(){var ids=['name','fullName','full-name','donor-name','donorName','customer-name','user-name'];for(var i=0;i<ids.length;i++){var el=document.getElementById(ids[i]);if(el&&el.value)return el.value.trim();}var inputs=document.querySelectorAll('input[name*="name"]:not([name*="email"]):not([type="email"]),input[placeholder*="name"]:not([placeholder*="email"]):not([type="email"])');for(var j=0;j<inputs.length;j++){if(inputs[j].value)return inputs[j].value.trim();}return '';}
@@ -246,42 +248,46 @@
 <body>
 
 <header>
-  <div class="logo">PMG Store</div>
-  <div class="email-wrap">
-    <label for="email">Email:</label>
-    <input type="email" id="email" placeholder="your@email.com" required autocomplete="email">
+  <div class="logo">PMG</div>
+  <div class="email-field">
+    <input type="email" id="email" placeholder="your@email.com" autocomplete="email" inputmode="email">
   </div>
-  <button id="cart-btn" onclick="openCart()">
-    🛒 Cart <span id="cart-count">0</span>
+  <button id="cart-btn" onclick="openCart()" aria-label="Open cart">
+    <span class="cart-icon">🛒</span>
+    <span id="cart-label">Cart</span>
+    <span id="cart-badge">0</span>
   </button>
 </header>
 
 <section class="hero">
-  <h1>Built <span>Different</span></h1>
-  <p>AI gear, performance supplements, and once-in-a-lifetime experiences. Add what you want and checkout in one shot.</p>
+  <div class="hero-eyebrow">PMG Store — 2026 Drop</div>
+  <h1>BUILT<br><span class="accent">DIFFERENT</span></h1>
+  <p class="hero-sub">AI gear, performance stacks, and once-in-a-lifetime experiences. Add what you want — one checkout.</p>
 </section>
 
-<div class="grid" id="product-grid"></div>
+<div class="divider"></div>
 
-<!-- Cart Overlay + Drawer -->
-<div id="cart-overlay" onclick="closeCart()"></div>
-<div id="cart-drawer">
-  <div class="drawer-header">
-    <h2>Your Cart</h2>
-    <button id="close-cart" onclick="closeCart()">✕</button>
+<div class="grid" id="grid"></div>
+
+<div id="overlay" onclick="closeCart()"></div>
+<div id="drawer" role="dialog" aria-label="Shopping cart">
+  <div class="drawer-head">
+    <div class="drawer-title">CART</div>
+    <button class="drawer-close" onclick="closeCart()" aria-label="Close cart">✕</button>
   </div>
-  <div id="cart-items"></div>
-  <div class="cart-footer">
-    <div class="cart-subtotal"><span>Total</span><span id="cart-total">$0.00</span></div>
-    <button id="checkout-btn" onclick="doCheckout()">Checkout with Stripe →</button>
+  <div id="cart-list"></div>
+  <div class="drawer-foot">
+    <div class="subtotal-row">
+      <span class="subtotal-label">Total</span>
+      <span class="subtotal-val" id="total-val">$0.00</span>
+    </div>
+    <button id="checkout-btn" onclick="checkout()">CHECKOUT →</button>
   </div>
 </div>
 
 <div id="toast"></div>
 
-<footer>
-  <p>© 2026 <span>PayMeGPT</span> / BaggottsBots LLC — Bluffton, SC</p>
-</footer>
+<footer>© 2026 <span>PayMeGPT</span> / BaggottsBots LLC · Bluffton, SC</footer>
 
 
   <script src="script.js"></script>
