@@ -32,7 +32,7 @@ body::before {
 }
 
 /* ─── HEADER ─── */
-header {
+header[data-section="navbar"] {
   position: fixed; top: 0; left: 0; right: 0; z-index: 90;
   height: var(--header-h);
   background: rgba(8,8,8,0.88);
@@ -120,7 +120,7 @@ header {
 }
 
 /* ─── HERO ─── */
-.hero {
+.hero[data-section="hero"] {
   padding: calc(var(--header-h) + 52px) 20px 52px;
   text-align: center;
   position: relative; z-index: 1;
@@ -399,8 +399,8 @@ header {
 
 /* ─── TOAST ─── */
 #toast {
-  position: fixed; bottom: 24px; left: 50%;
-  transform: translateX(-50%) translateY(80px);
+  position: fixed; top: 80px; left: 50%;
+  transform: translateX(-50%) translateY(-30px);
   background: var(--surface2);
   border: 1px solid var(--teal-glow);
   color: var(--text);
@@ -417,7 +417,7 @@ header {
 #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
 /* ─── FOOTER ─── */
-footer {
+footer[data-section="footer"] {
   text-align: center;
   padding: 28px 20px;
   color: #333;
