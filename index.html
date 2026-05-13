@@ -268,6 +268,14 @@
 <div class="divider"></div>
 <div class="grid" id="grid"></div>
 
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="closeLightbox()">
+  <button id="lightbox-close" onclick="closeLightbox()" aria-label="Close">✕</button>
+  <img id="lightbox-img" src="" alt="">
+  <div id="lightbox-caption"></div>
+</div>
+
+<!-- CART -->
 <div id="overlay" onclick="closeCart()"></div>
 <div id="drawer">
   <div class="drawer-head">
@@ -276,6 +284,7 @@
   </div>
   <div id="cart-list"></div>
   <div class="drawer-foot">
+    <div id="order-summary-wrap"></div>
     <div class="subtotal-row">
       <span class="subtotal-label">Total</span>
       <span class="subtotal-val" id="total-val">$0.00</span>
