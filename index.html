@@ -247,7 +247,7 @@
 </head>
 <body>
 
-<header>
+<header data-section="navbar">
   <div class="logo">PMG</div>
   <div class="email-field">
     <input type="email" id="email" placeholder="your@email.com" autocomplete="email" inputmode="email">
@@ -259,14 +259,14 @@
   </button>
 </header>
 
-<section class="hero">
+<section data-section="hero" class="hero">
   <div class="hero-eyebrow">PMG Store — 2026 Drop</div>
   <h1>BUILT<br><span class="accent">DIFFERENT</span></h1>
   <p class="hero-sub">AI gear, performance stacks, and once-in-a-lifetime experiences. Add what you want — one checkout.</p>
 </section>
 
 <div class="divider"></div>
-<div class="grid" id="grid"></div>
+<section data-section="products" class="grid" id="grid"></section>
 
 <!-- LIGHTBOX -->
 <div id="lightbox" onclick="closeLightbox()">
@@ -293,8 +293,7 @@
   </div>
 </div>
 
-<div id="toast"></div>
-<footer>© 2026 <span>PayMeGPT</span> / BaggottsBots LLC · Bluffton, SC</footer>
+<footer data-section="footer">© 2026 <span>PayMeGPT</span> / BaggottsBots LLC · Bluffton, SC</footer>
 
 
   <script src="script.js"></script>
